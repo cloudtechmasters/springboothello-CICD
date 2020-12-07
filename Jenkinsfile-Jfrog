@@ -6,7 +6,7 @@ pipeline{
     stages{
         stage('git checkout'){
             steps{
-                git 'https://github.com/cloudtechmasters/spring-cloud-kubernetes.git'
+                git 'https://github.com/cloudtechmasters/springboohello-CICD.git'
             }
         }
         stage('Build Maven'){

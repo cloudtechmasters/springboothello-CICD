@@ -1,0 +1,19 @@
+---
+- hosts: nexusserver
+  tasks:
+  - name: Install PIP
+    yum:
+      name: python-pip
+      state: present
+  - name: Install lxml
+    pip:
+      name: lxml
+  - name: download artifacts
+    maven_artifact:
+      group_id: org.springframework
+      artifact_id: gs-spring-boot
+      repository_url: 'http://18.206.74.244:8081/repository/maven-releases/'
+      version: "{{ version }}"
+      username: admin
+      password: admin123
+      dest: /opt

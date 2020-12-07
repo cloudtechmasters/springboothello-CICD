@@ -1,0 +1,54 @@
+pipeline{
+    agent any
+    tools { 
+        maven 'maven3' 
+    }
+    stages{
+        stage('git checkout'){
+            steps{
+                git 'https://github.com/cloudtechmasters/spring-cloud-kubernetes.git'
+            }
+        }
+        stage('Build Maven'){
+            steps{
+	           dir("kubernetes-configmap-reload"){
+	                sh 'mvn clean package'
+                }
+            }
+        }
+        stage('Upload Artifact'){
+            steps{
+                script {
+                    def server = Artifactory.server 'Jfrog'
+					def uploadSpec = """{
+                      "files": [
+                        {
+                          "pattern": "*/.jar",
+                          "target": "example-repo-local/"
+                        }
+                     ]
+                    }"""
+                    server.upload(uploadSpec)
+                    echo 'Uploaded the file to Jfrog Artifactory successfully'
+                }
+            }
+        }
+        stage('Download Artifact'){
+            steps{
+                script {
+                    def server = Artifactory.server 'Jfrog'
+					def downloadSpec = """{
+                      "files": [
+                        {
+                          "pattern": "example-repo-local/*.jar",
+                          "target": "/tmp/"
+                        }
+                     ]
+                    }"""
+                    server.download(downloadSpec)
+                    echo 'Downloaded the files from Jfrog Artifactory successfully'
+                }
+            }
+        }
+    }
+}

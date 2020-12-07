@@ -1,0 +1,42 @@
+pipeline{
+    agent any
+    parameters {
+        string(name: 'ImagTag', description: "Docker Image Tag")
+    }    
+    tools { 
+        maven 'maven3' 
+    }
+    stages{
+        stage('git checkout'){
+            steps{
+                git 'https://github.com/cloudtechmasters/springboohello-CICD.git'
+            }
+        }
+        stage('Build Maven'){
+            steps{
+                sh 'mvn clean package'
+            }
+        }
+        stage("Docker Image"){
+            steps{
+                sh "docker build -t cloudtechmasters/springboohello:${ImagTag} ."
+            }
+        }
+        stage("Docker Push"){
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'docker_credentials', passwordVariable: 'password', usernameVariable: 'username')]) {
+                    sh "docker login -u ${username} -p ${password}"
+                }
+                sh "docker push cloudtechmasters/springboohello:${ImagTag}"
+            }
+        }
+    }
+    post {
+        success {
+            mail bcc: '', body: 'Maven artifact build successfully', cc: '', from: '', replyTo: '', subject: 'The Pipeline success', to: 'kumar240.qis@gmail.com'
+        }
+        failure {  
+            mail bcc: '', body: 'Maven artifact build failed', cc: '', from: '', replyTo: '', subject: 'The Pipeline failed', to: 'kumar240.qis@gmail.com'
+         } 
+    }
+}

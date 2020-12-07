@@ -1,0 +1,33 @@
+pipeline{
+    agent any
+    parameters {
+        choice(name: 'action', choices: 'Create\nRemove', description: 'Create/Remove ApplicationContainer')
+        string(name: 'ImagTag', description: "Docker Image Tag")
+    }
+    tools { 
+        maven 'maven3' 
+    }
+    stages{
+        stage("SCM"){
+            steps{
+                git 'https://github.com/cloudtechmasters/springboohello-CICD.git'
+            }
+        }        
+        stage("docker deploy") {
+            when {
+				expression { params.action == 'Create' }
+			}
+	        steps {
+               sh 'sudo ansible-playbook docker-run-deploy.yml --extra-vars ImageTag=${ImagTag}'
+           }
+        }
+        stage("stop & remove container") {
+            when {
+				expression { params.action == 'Remove' }
+			}
+	        steps {
+            sh 'sudo ansible-playbook docker-remove-application.yml --extra-vars ImageTag=${ImagTag}'
+           }            
+        }
+    }
+}

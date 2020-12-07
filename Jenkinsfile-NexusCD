@@ -1,0 +1,13 @@
+pipeline {
+    agent any
+    parameters {
+        string(name: 'ArtifactVersion', description: "Artfact Version")
+    }
+    stages{
+        stage("Download Artifact") {
+            steps {
+                sh 'sudo ansible-playbook downloadartifact.yml --extra-vars version=${ArtifactVersion}'
+            }
+        }
+    }
+}

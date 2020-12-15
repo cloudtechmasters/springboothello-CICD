@@ -15,10 +15,8 @@
       state: started
       ports:
        - "8080:8080"
-    tags: create
   - name: stop container
     docker_container:
       name: springbootapplication
       image: cloudtechmasters/springboohello:{{ ImageTag }}
       state: absent
-    tags: remove

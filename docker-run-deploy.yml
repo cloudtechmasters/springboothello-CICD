@@ -1,0 +1,24 @@
+---
+- hosts: dockerinstance
+  tasks:
+  - name: Install pip
+    yum:
+      name: python-pip
+      state: present
+  - name: Install docker
+    pip:
+      name: docker
+  - name: deploy applicaiton as docker container
+    docker_container:
+      name: springbootapplication
+      image: cloudtechmasters/springboohello:{{ ImageTag }}
+      state: started
+      ports:
+       - "8080:8080"
+    tags: create
+  - name: stop container
+    docker_container:
+      name: springbootapplication
+      image: cloudtechmasters/springboohello:{{ ImageTag }}
+      state: absent
+    tags: remove

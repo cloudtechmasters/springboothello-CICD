@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+	environment {
+		FROM_MAIL = "${sh (script: 'aws ssm get-parameters --region us-east-1 --names FROM_MAIL --query Parameters[0].Value | sed \'s/"//g\'',returnStdout: true)}"
+		TO_MAIL = "${sh (script: 'aws ssm get-parameters --region us-east-1 --names TO_MAIL --query Parameters[0].Value | sed \'s/"//g\'',returnStdout: true)}"
+	}
+	tools{ 
+        maven 'maven3'
+    }
+    stages {
+        stage('Git Checkout') {
+            steps {
+                git branch: 'master', url: 'https://github.com/Naresh240/spring-boot-hello.git'
+            }
+        }
+        stage('Build Maven'){
+    		steps {
+        			sh 'mvn clean package'
+    		}
+        }
+    }
+	post {
+		always {
+			mail  from: "${FROM_MAIL}",
+				to: "${TO_MAIL}",
+				subject: 'Build Info',
+				body: 'Build Success'
+		}
+	}
+}

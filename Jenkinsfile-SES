@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+	tools{ 
+        maven 'maven3'
+    }
+    stages {
+        stage('Git Checkout') {
+            steps {
+                git branch: 'master', url: 'https://github.com/Naresh240/springboohello-CICD.git'
+            }
+        }
+        stage('Build Maven'){
+    		steps {
+        			sh 'mvn clean package'
+    		}
+        }
+    }
+    post {
+        success {
+            mail bcc: '', body: 'Maven artifact build successfully', cc: '', from: 'naresh240.qis@gmail.com', replyTo: '', subject: 'The Pipeline success', to: 'naresh240.qis@gmail.com'
+        }
+        failure {  
+            mail bcc: '', body: 'Maven artifact build failed', cc: '', from: 'naresh240.qis@gmail.com', replyTo: '', subject: 'The Pipeline failed', to: 'naresh240.qis@gmail.com'
+         } 
+    }
+}

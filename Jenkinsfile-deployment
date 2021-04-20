@@ -1,0 +1,17 @@
+pipeline{
+    agent any
+    stages{
+        stage('get verionToBeDownloaded  tag'){
+            steps{
+                sh "echo verionToBeDownloaded is ${params.verionToBeDownloaded}"
+            }
+        }
+        stage('download jar from maven central '){
+             steps {
+	                       sh """ sudo ansible-playbook -i /root/hosts /root/download-and-copy-jar.yml --extra-vars '{"verionToBeDownloaded":"${params.verionToBeDownloaded}"}' """
+
+               
+           }
+        }
+    }
+}

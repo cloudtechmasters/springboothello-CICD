@@ -14,7 +14,7 @@ pipeline {
         stage("SCM") {
             steps {
                 script {
-                    git 'https://github.com/cloudtechmasters/springboohello-CICD.git';
+                    git 'https://github.com/cloudtechmasters/springboothello-CICD.git';
                 }
             }
         }

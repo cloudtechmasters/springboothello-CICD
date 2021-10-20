@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Git Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/Naresh240/springboohello-CICD.git'
+                git branch: 'master', url: 'https://github.com/cloudtechmasters/springboothello-CICD.git'
             }
         }
         stage('Build Maven'){
@@ -17,10 +17,10 @@ pipeline {
     }
     post {
         success {
-            mail bcc: '', body: 'Maven artifact build successfully', cc: '', from: 'naresh240.qis@gmail.com', replyTo: '', subject: 'The Pipeline success', to: 'naresh240.qis@gmail.com'
+            mail bcc: '', body: 'Maven artifact build successfully', cc: '', from: 'senderemailname@gmail.com', replyTo: '', subject: 'The Pipeline success', to: 'toemailname@gmail.com'
         }
         failure {  
-            mail bcc: '', body: 'Maven artifact build failed', cc: '', from: 'naresh240.qis@gmail.com', replyTo: '', subject: 'The Pipeline failed', to: 'naresh240.qis@gmail.com'
+            mail bcc: '', body: 'Maven artifact build failed', cc: '', from: 'senderemailname@gmail.com', replyTo: '', subject: 'The Pipeline failed', to: 'toemailname@gmail.com'
          } 
     }
 }
